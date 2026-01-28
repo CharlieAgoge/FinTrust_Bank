@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}FinTrust Bank – Your first step{% endblock %}
+{% block content %}
+<div class="hero">
+    <span class="badge">Cyber Agoge Bootcamp</span>
+    <h1>Welcome to FinTrust Bank</h1>
+    <p class="tagline">Your first app on the bootcamp. Clone the repo, run it in Cursor, and log in—right here.</p>
+</div>
+
+<div class="steps">
+    <div class="step">
+        <span class="step-num">1</span>
+        <h3>Clone the repo</h3>
+        <p>Get the code from GitHub and open the project in Cursor.</p>
+    </div>
+    <div class="step">
+        <span class="step-num">2</span>
+        <h3>Run the app</h3>
+        <p>In the terminal: <code>flask run</code>. The app will be live at <code>http://127.0.0.1:5000</code>.</p>
+    </div>
+    <div class="step">
+        <span class="step-num">3</span>
+        <h3>Log in</h3>
+        <p>Use the demo account and explore your dashboard.</p>
+    </div>
+</div>
+
+<div class="cta-block">
+    <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-hero">Log in to FinTrust</a>
+    <p class="cta-hint">Demo: <strong>student</strong> / <strong>demopassword</strong></p>
+</div>
+{% endblock %}

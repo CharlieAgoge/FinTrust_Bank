@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}FinTrust Bank – Log in{% endblock %}
+{% block content %}
+<div class="auth-wrap">
+    <div class="auth-box">
+        <div class="auth-brand">
+            <span class="brand-mark">FT</span>
+            <span class="brand-name">FinTrust Bank</span>
+        </div>
+        <h2>Log in</h2>
+        <p class="demo-hint">Use the demo account to get started.</p>
+        <div class="demo-creds">
+            <span><strong>student</strong></span>
+            <span class="sep">/</span>
+            <span><strong>demopassword</strong></span>
+        </div>
+        {% if error %}
+        <p class="error">{{ error }}</p>
+        {% endif %}
+        <form method="post" action="{{ url_for('auth.login') }}">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required autocomplete="username" placeholder="e.g. student">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required autocomplete="current-password" placeholder="e.g. demopassword">
+            <button type="submit" class="btn btn-primary btn-block">Log in</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

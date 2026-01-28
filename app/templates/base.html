@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}FinTrust Bank{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header class="site-header">
+        <a href="{{ url_for('public.index') }}" class="brand">
+            <span class="brand-mark">FT</span>
+            <span class="brand-name">FinTrust Bank</span>
+        </a>
+        <nav>
+            {% if session.get('username') %}
+                <a href="{{ url_for('dashboard.dashboard') }}">Dashboard</a>
+                <a href="{{ url_for('auth.logout') }}" class="nav-out">Logout</a>
+            {% else %}
+                <a href="{{ url_for('public.index') }}">Home</a>
+                <a href="{{ url_for('auth.login') }}" class="nav-cta">Log in</a>
+            {% endif %}
+        </nav>
+    </header>
+    <main class="main">
+        {% block content %}{% endblock %}
+    </main>
+    <footer class="site-footer">
+        <p>FinTrust Bank &middot; Cyber Agoge Bootcamp Module 1 &middot; For teaching only</p>
+    </footer>
+    {% block scripts %}{% endblock %}
+</body>
+</html>
