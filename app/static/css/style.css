@@ -54,7 +54,7 @@ body {
   justify-content: center;
   width: 36px;
   height: 36px;
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dim) 100%);
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
   color: var(--bg);
   border-radius: 10px;
   font-size: 0.85rem;
