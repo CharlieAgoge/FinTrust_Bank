@@ -2,6 +2,7 @@
 import os
 import sqlite3
 from pathlib import Path
+from typing import Optional, Tuple
 from werkzeug.security import check_password_hash, generate_password_hash
 
 # SQLite path: instance/ under project root (FinTrust_Bank/)
@@ -87,7 +88,7 @@ def verify_user(username: str, password: str) -> bool:
         conn.close()
 
 
-def get_balance(username: str) -> float | None:
+def get_balance(username: str) -> Optional[float]:
     """Return balance for user or None if not found."""
     conn = _get_conn()
     try:
@@ -99,24 +100,60 @@ def get_balance(username: str) -> float | None:
         conn.close()
 
 
-def transfer(from_user: str, to_user: str, amount: float) -> tuple[bool, str]:
+def _validate_transfer_inputs(from_user: str, to_user: str, amount: float) -> Tuple[bool, str]:
+    """Validate transfer inputs. Returns (valid, error_message)."""
+    if not from_user or not isinstance(from_user, str):
+        return False, "Invalid sender."
+    if not to_user or not isinstance(to_user, str):
+        return False, "Invalid recipient."
+    from_user = from_user.strip()
+    to_user = to_user.strip()
+    if not from_user or not to_user:
+        return False, "Sender and recipient are required."
+    if from_user == to_user:
+        return False, "Cannot transfer to yourself."
+    try:
+        amt = float(amount)
+    except (TypeError, ValueError):
+        return False, "Amount must be a valid number."
+    if amt <= 0:
+        return False, "Amount must be positive."
+    if amt != amt or amt == float("inf"):  # NaN or infinity
+        return False, "Amount must be a finite number."
+    return True, ""
+
+
+def transfer(from_user: str, to_user: str, amount: float) -> Tuple[bool, str]:
     """
     Transfer amount from from_user to to_user. Returns (success, message).
     Preserves integrity: amount is unchanged and balances are updated atomically.
+    Balance check and updates run in the same transaction to prevent race conditions.
     """
-    if amount <= 0:
-        return False, "Amount must be positive."
+    ok, err = _validate_transfer_inputs(from_user, to_user, amount)
+    if not ok:
+        return False, err
+    from_user = from_user.strip()
+    to_user = to_user.strip()
+    amount = float(amount)
     conn = _get_conn()
     try:
         conn.execute("BEGIN IMMEDIATE")
-        from_bal = get_balance(from_user)
-        to_bal = get_balance(to_user)
-        if from_bal is None:
+        # Balance check within same transaction/connection - prevents race condition.
+        # Using get_balance() would open separate connections, allowing concurrent
+        # transfers to bypass balance checks between read and update.
+        from_row = conn.execute(
+            "SELECT balance FROM accounts WHERE username = ?", (from_user,)
+        ).fetchone()
+        to_row = conn.execute(
+            "SELECT balance FROM accounts WHERE username = ?", (to_user,)
+        ).fetchone()
+        if from_row is None:
             conn.rollback()
             return False, "Sender account not found."
-        if to_bal is None:
+        if to_row is None:
             conn.rollback()
             return False, "Recipient account not found."
+        from_bal = float(from_row[0])
         if from_bal < amount:
             conn.rollback()
             return False, "Insufficient balance."
@@ -146,9 +183,9 @@ def store_verify(username: str, password: str) -> bool:
     return verify_user(username, password)
 
 
-def store_balance(username: str) -> float | None:
+def store_balance(username: str) -> Optional[float]:
     return get_balance(username)
 
 
-def store_transfer(from_user: str, to_user: str, amount: float) -> tuple[bool, str]:
+def store_transfer(from_user: str, to_user: str, amount: float) -> Tuple[bool, str]:
     return transfer(from_user, to_user, amount)
