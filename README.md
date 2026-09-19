@@ -1,14 +1,10 @@
 # FinTrust Bank
 
-TEST
-
-Update
-
 **Your first app on the Cyber Agoge Bootcamp.** FinTrust Bank is a secure-by-design banking web app you’ll clone, run locally, and log into in Lesson 1—then use throughout the 6-week programme to learn the CIA triad, login flows, and DevSecOps. Follow the **Gamma** deck your instructor shares for step-by-step direction in class.
 
 ---
 
-## Lesson 1: Your first steps Hello how are you 
+## Lesson 1: Your first steps
 
 Do these in order. By the end you’ll have the app running and you’ll be logged in.
 
@@ -91,6 +87,6 @@ Then open **http://localhost:5000** and log in with `student` / `demopassword`.
 
 ## Tech
 
-- **Backend:** Python 3.11, Flask  
-- **Data:** SQLite in `instance/` (no extra DB setup)  
+- **Backend:** Python 3.11, Flask
+- **Data:** SQLite in `instance/` (no extra DB setup)
 - **Containers:** `Dockerfile` + `docker-compose.yml` for one-service run
