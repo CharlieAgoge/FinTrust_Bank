@@ -4,8 +4,6 @@
 
 ---
 
-Charlie's change
-
 ## Lesson 1: Your first steps
 
 Do these in order. By the end you’ll have the app running and you’ll be logged in.
